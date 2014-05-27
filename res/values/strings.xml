@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">GDG-MeetU-2014-asymmetric-demo</string>
+    <string name="app_name">GDG-MeetsU-2014-asymmetric-demo</string>
     <string name="app_name_AndroidKeyStoreEncrypt">AndroidKeyStore Encrypt/Decrypt</string>
     <string name="app_name_GenerateRSAKey">Generate RSA Key</string>
     <string name="app_name_AndroidKeyChain">KeyChain</string>
@@ -9,7 +9,7 @@
     <string name="app_name_AndroidKeyStoreSign">AndroidKeyStore Sign/Verify</string>
     <string name="androidkeystoreencrypt">AndroidKeyStore Enc/Dec</string>
     <string name="view_key_parameter">View m,e,d!</string>
-    <string name="hello_world">Hello GDG MeetU Aquila 2014!\n</string>
+    <string name="hello_world">Hello GDG MeetsU Aquila 2014!\n</string>
     <string name="action_settings">Settings</string>
     <string name="genera_chiavi">Gen keys</string>
     <string name="cifra_label">Encrypt</string>
