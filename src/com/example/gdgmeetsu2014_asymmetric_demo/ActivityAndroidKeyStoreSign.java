@@ -154,6 +154,7 @@ public class ActivityAndroidKeyStoreSign extends Activity {
 			}
 		}
 
+		//Keys generation
 		private void generaChiavi() {
 			new AsyncTask<Void, String, Void>() {
 
@@ -226,6 +227,7 @@ public class ActivityAndroidKeyStoreSign extends Activity {
 
 		}
 
+		//Data Signature
 		private void firmaData() {
 			
 			String data = mInData.getText().toString();
@@ -273,9 +275,11 @@ public class ActivityAndroidKeyStoreSign extends Activity {
 			}
 
 		}
-
+		//Signature Verification
 		private void verificaData() {
+			//M
 			byte[] data = mInData.getText().toString().getBytes();
+			//F
 			byte[] stringSignature = mOutData.getText().toString().getBytes();
 			byte[] signature = null;
 			try {

@@ -37,7 +37,7 @@ public class ActivityAndroidKeyChain extends Activity implements
 
 	private static final String TAG = "ActivityAndroidKeyChain";
 
-	private static final String PKCS12_FILENAME = "gdgmeetsu2014.p12";
+	private static final String PKCS12_FILENAME = "gdgmeetsu.p12";
 	private static final String CA_CERT_FILENAME = "cacert.pem";
 
 	private Button exit_Button;
@@ -178,26 +178,27 @@ public class ActivityAndroidKeyChain extends Activity implements
 
 			data = textToSign.getBytes();
 
-			byte[] base64_data = Base64.encode(data, Base64.DEFAULT);
-
 			Signature signature = null;
 
 			signature = Signature.getInstance("SHA1withRSA");
 
 			signature.initSign(private_key);
-
-			signature.update(base64_data);
+			
+			signature.update(data);
 
 			byte[] signed = null;
 
 			signed = signature.sign();
 
-			mOutData.setText(Base64.encode(signed, Base64.DEFAULT).toString());
+			String base64signed = Base64.encodeToString(signed,
+					Base64.DEFAULT);
+			
+			mOutData.setText(base64signed);
 
 			signature.initVerify(public_key);
 
-			signature.update(base64_data);
-
+			signature.update(data);
+			
 			valid = signature.verify(signed);
 
 			debug("Verified = " + valid);

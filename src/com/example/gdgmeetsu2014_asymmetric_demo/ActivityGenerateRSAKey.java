@@ -171,6 +171,7 @@ public class ActivityGenerateRSAKey extends Activity {
 
 		boolean flag = false;
 		
+		//Keys Generation
 		private void genKeys() {
 
 			KeyPairGenerator kpg = null;
@@ -196,6 +197,57 @@ public class ActivityGenerateRSAKey extends Activity {
 			view_m_e_d();
 
 		}
+		
+		//RSA Parameters
+		private void view_m_e_d() {
+			clearText();
+			if (keypair == null){
+				debug("Keys not found!");
+				return;
+			}		
+			KeyFactory factory = null;
+			try {
+				factory = KeyFactory.getInstance("RSA");
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+
+			RSAPublicKeySpec rsa_public_key = null;
+			try {
+				rsa_public_key = factory.getKeySpec(keypair.getPublic(),
+						RSAPublicKeySpec.class);
+			} catch (InvalidKeySpecException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			RSAPrivateKeySpec rsa_private_key = null;
+			try {
+				rsa_private_key = factory.getKeySpec(keypair.getPrivate(),
+						RSAPrivateKeySpec.class);
+			} catch (InvalidKeySpecException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			debug("----Private Key Parameters----");
+			debug("Hex Private Exponent: "
+					+ rsa_private_key.getPrivateExponent().toString(16));
+			debug("Hex Public Module: "
+					+ rsa_private_key.getModulus().toString(16));
+			debug("-----------------------------");
+			debug("----Public Key Parameters----");
+			debug("Hex Public Module: "
+					+ rsa_public_key.getModulus().toString(16));
+			debug("Hex Public Exponent: "
+					+ rsa_public_key.getPublicExponent().toString(16));
+			debug("----------------------------\n");
+			
+			m = rsa_public_key.getModulus();
+			e = rsa_public_key.getPublicExponent();
+			d = rsa_private_key.getPrivateExponent();
+
+		}
+
 
 		private void encrypt() {
 			if (keypair == null){
@@ -324,55 +376,7 @@ public class ActivityGenerateRSAKey extends Activity {
 			flag = false;
 		}
 
-		private void view_m_e_d() {
-			clearText();
-			if (keypair == null){
-				debug("Keys not found!");
-				return;
-			}		
-			KeyFactory factory = null;
-			try {
-				factory = KeyFactory.getInstance("RSA");
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
-
-			RSAPublicKeySpec rsa_public_key = null;
-			try {
-				rsa_public_key = factory.getKeySpec(keypair.getPublic(),
-						RSAPublicKeySpec.class);
-			} catch (InvalidKeySpecException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			RSAPrivateKeySpec rsa_private_key = null;
-			try {
-				rsa_private_key = factory.getKeySpec(keypair.getPrivate(),
-						RSAPrivateKeySpec.class);
-			} catch (InvalidKeySpecException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			debug("----Private Key Parameters----");
-			debug("Hex Private Exponent: "
-					+ rsa_private_key.getPrivateExponent().toString(16));
-			debug("Hex Public Module: "
-					+ rsa_private_key.getModulus().toString(16));
-			debug("-----------------------------");
-			debug("----Public Key Parameters----");
-			debug("Hex Public Module: "
-					+ rsa_public_key.getModulus().toString(16));
-			debug("Hex Public Exponent: "
-					+ rsa_public_key.getPublicExponent().toString(16));
-			debug("----------------------------\n");
-			
-			m = rsa_public_key.getModulus();
-			e = rsa_public_key.getPublicExponent();
-			d = rsa_private_key.getPrivateExponent();
-
-		}
-
+		
 		@SuppressLint("NewApi")
 		private void debug(String message) {
 			mDebugText.append(message + "\n");

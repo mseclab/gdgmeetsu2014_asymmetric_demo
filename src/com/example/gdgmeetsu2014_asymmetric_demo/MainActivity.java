@@ -97,20 +97,21 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.androidkeystoreencrypt:
-			startActivityAndroidKeyStoreEncrypt(v);
-			break;
 		case R.id.generatersakey:
 			startGenerateRSAKey(v);
-			break;
-		case R.id.androidkeychain:
-			startAndroidKeyChain(v);
 			break;
 		case R.id.androidkeystoregeneratekey:
 			startAndroidKeyStoreGenerateKey(v);
 			break;
 		case R.id.androidkeystoresign:
 			startAndroidKeyStoreSign(v);
+			break;
+		
+		case R.id.androidkeystoreencrypt:
+			startActivityAndroidKeyStoreEncrypt(v);
+			break;
+		case R.id.androidkeychain:
+			startAndroidKeyChain(v);
 			break;
 		default:
 			break;

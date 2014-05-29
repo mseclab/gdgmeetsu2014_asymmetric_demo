@@ -25,8 +25,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.security.auth.x500.X500Principal;
 
-
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
@@ -48,7 +46,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import com.example.gdgmeetsu2014_asymmetric_demo.R;
 
-public class ActivityAndroidKeyStoreEncrypt extends Activity  {
+public class ActivityAndroidKeyStoreEncrypt extends Activity {
 
 	private final static String ALIAS = "DEVKEY1";
 
@@ -56,8 +54,7 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_androidkeystoreencrypt);
-		
-		
+
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -83,9 +80,9 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	
-	 /* A placeholder fragment containing a simple view.
+
+	/*
+	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment implements
 			View.OnClickListener {
@@ -104,15 +101,15 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 		private static final String SIGN_ALG = "SHA256withRSA";
 		private static final String TAG = "AndroidKeyStoreDemo";
 		private boolean flag = false;
-		
+
 		public PlaceholderFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_androidkeystoreencrypt, container,
-					false);
+			View rootView = inflater.inflate(
+					R.layout.fragment_androidkeystoreencrypt, container, false);
 
 			// Bottoni
 			exit_Button = (Button) rootView.findViewById(R.id.exit_button);
@@ -162,10 +159,11 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 		private KeyStore.Entry entry = null;
 
 		private void cifraData() {
-			
+
 			// TODO Auto-generated method stub
+			// Input data
 			String data = mInData.getText().toString();
-			debug("String to encrypt:" + data);
+			debug("String to encrypt: " + data);
 			byte[] rawData = data.getBytes();
 
 			KeyStore.PrivateKeyEntry entry = null;
@@ -174,16 +172,16 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 				keyStore = initKeyStore();
 				if (keyStore == null)
 					return;
-				
+
 				entry = (KeyStore.PrivateKeyEntry) dammiElementoDalKeystore();
-				if (entry == null){
+				if (entry == null) {
 					debug("Key not found");
 					return;
 				}
-					
+
 				PublicKey publicKeyEnc = ((KeyStore.PrivateKeyEntry) entry)
 						.getCertificate().getPublicKey();
-				
+
 				KeyFactory factory = null;
 				try {
 					factory = KeyFactory.getInstance("RSA");
@@ -199,19 +197,23 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-				debug("Key size " + Integer.toString(rsa_public_key.getModulus().bitLength()));
-				
+
+				debug("Key size "
+						+ Integer.toString(rsa_public_key.getModulus()
+								.bitLength()));
+
 				Cipher encCipher = null;
-				byte[] ecryptedText = null;
+				byte[] encryptedText = null;
 				encCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 				encCipher.init(Cipher.ENCRYPT_MODE, publicKeyEnc);
-				ecryptedText = encCipher.doFinal(rawData);
-				debug("Text encrypted : " + ecryptedText.toString());
+				encryptedText = encCipher.doFinal(rawData);
+
 				String encryptedDataBase64 = Base64.encodeToString(
-						ecryptedText, Base64.DEFAULT);
+						encryptedText, Base64.DEFAULT);
+
 				mOutData.setText(encryptedDataBase64);
-				debug("Base64 text encrypted: " + encryptedDataBase64);
+
+				// debug("Base64 text encrypted: " + encryptedDataBase64);
 
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
@@ -230,17 +232,19 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 		}
 
 		private void decifraData() {
-			
-			if(flag==false){
+
+			if (flag == false) {
 				debug("Encrypt before");
 				return;
 			}
-				
+
 			// TODO Auto-generated method stub
 			KeyStore.PrivateKeyEntry entry = null;
 
 			byte[] data = mInData.getText().toString().getBytes();
 			byte[] stringEncrypted = mOutData.getText().toString().getBytes();
+
+			String encryptedHex = mOutData.getText().toString();
 
 			byte[] encrypted = null;
 			try {
@@ -255,7 +259,7 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 				if (keyStore == null)
 					return;
 				entry = (KeyStore.PrivateKeyEntry) dammiElementoDalKeystore();
-				if (entry == null){
+				if (entry == null) {
 					debug("Key not found");
 					return;
 				}
@@ -265,11 +269,13 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 				decCipher.init(Cipher.DECRYPT_MODE,
 						((KeyStore.PrivateKeyEntry) entry).getPrivateKey());
 				plainTextByte = decCipher.doFinal(encrypted);
+
 				String plainText = new String(plainTextByte);
-				if (plainText.equalsIgnoreCase(new String(data))){
+
+				if (plainText.equalsIgnoreCase(new String(data))) {
 					debug("Text decrypted: " + plainText);
 					mOutData.setText(plainText);
-				}else
+				} else
 					debug("Error in decryption");
 
 			} catch (NoSuchAlgorithmException e) {
@@ -401,15 +407,12 @@ public class ActivityAndroidKeyStoreEncrypt extends Activity  {
 		private void debug(String message) {
 			mDebugText.append(message + "\n");
 			Log.v(TAG, message);
-			mScrollView.post(new Runnable()
-		    {
-		        public void run()
-		        {
-		        	mScrollView.fullScroll(View.FOCUS_DOWN);
-		        }
-		    });
+			mScrollView.post(new Runnable() {
+				public void run() {
+					mScrollView.fullScroll(View.FOCUS_DOWN);
+				}
+			});
 		}
 	}
-
 
 }

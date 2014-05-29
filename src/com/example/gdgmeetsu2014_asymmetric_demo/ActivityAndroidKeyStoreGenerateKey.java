@@ -130,6 +130,82 @@ public class ActivityAndroidKeyStoreGenerateKey extends Activity{
 
 		private KeyStore keyStore = null;
 		private KeyStore.Entry entry = null;
+		
+		//Keys Generation - AndroidKeyStore
+		private void generaChiavi() {
+			new AsyncTask<Void, String, Void>() {
+
+				@Override
+				protected Void doInBackground(Void... params) {
+					// TODO Auto-generated method stub
+					Context cx = getActivity();
+					// Build certificate parameters
+					Calendar notBefore = Calendar.getInstance();
+					Calendar notAfter = Calendar.getInstance();
+					notAfter.add(1, Calendar.YEAR);
+
+					android.security.KeyPairGeneratorSpec.Builder builder = new KeyPairGeneratorSpec.Builder(
+							cx);
+					builder.setAlias(ALIAS);
+					String infocert = String.format("CN=%s, OU=%s", ALIAS,
+							cx.getPackageName());
+					builder.setSubject(new X500Principal(infocert));
+					builder.setSerialNumber(BigInteger.ONE);
+					builder.setStartDate(notBefore.getTime());
+					builder.setEndDate(notAfter.getTime());
+					KeyPairGeneratorSpec spec = builder.build();
+
+					// Generate a key pair inside the AndroidKeyStore
+					KeyPairGenerator kpGenerator;
+					KeyPair kp = null;
+					try {
+						kpGenerator = KeyPairGenerator.getInstance("RSA",
+								"AndroidKeyStore");
+						kpGenerator.initialize(spec);
+						kp = kpGenerator.generateKeyPair();
+
+						publishProgress("Generated key pair : " + kp.toString());
+						PublicKey publickey = kp.getPublic();
+						//Will be null .. feature of AndroidKeyStore
+						PrivateKey privateKey = kp.getPrivate();
+						publishProgress("Public key format : "
+								+ publickey.getFormat());
+						publishProgress("Used algorithm : "
+								+ publickey.getAlgorithm());
+						if (privateKey.getEncoded() == null)
+							publishProgress("Is not possible directly to access to private key :-(");
+
+					} catch (NoSuchAlgorithmException e) {
+						debug(e.toString());
+					} catch (NoSuchProviderException e) {
+						debug(e.toString());
+					} catch (InvalidAlgorithmParameterException e) {
+						debug(e.toString());
+					}
+					return null;
+				}
+
+				protected void onProgressUpdate(String... values) {
+					debug(values[0]);
+				}
+
+				@Override
+				protected void onPostExecute(Void result) {
+					// TODO Auto-generated method stub
+					progressdialog.dismiss();
+
+				}
+
+				@Override
+				protected void onPreExecute() {
+					progressdialog = ProgressDialog.show(getActivity(),
+							"Please wait...", "Generating keys...");
+				}
+
+			}.execute();
+
+		}
+
 
 		private void accediChiavi() {
 			// TODO Auto-generated method stub
@@ -187,78 +263,7 @@ public class ActivityAndroidKeyStoreGenerateKey extends Activity{
 			return keyStore;
 		}
 
-		private void generaChiavi() {
-			new AsyncTask<Void, String, Void>() {
-
-				@Override
-				protected Void doInBackground(Void... params) {
-					// TODO Auto-generated method stub
-					Context cx = getActivity();
-					// Generate a key pair inside the AndroidKeyStore
-					Calendar notBefore = Calendar.getInstance();
-					Calendar notAfter = Calendar.getInstance();
-					notAfter.add(1, Calendar.YEAR);
-
-					android.security.KeyPairGeneratorSpec.Builder builder = new KeyPairGeneratorSpec.Builder(
-							cx);
-					builder.setAlias(ALIAS);
-					String infocert = String.format("CN=%s, OU=%s", ALIAS,
-							cx.getPackageName());
-					builder.setSubject(new X500Principal(infocert));
-					builder.setSerialNumber(BigInteger.ONE);
-					builder.setStartDate(notBefore.getTime());
-					builder.setEndDate(notAfter.getTime());
-					KeyPairGeneratorSpec spec = builder.build();
-
-					KeyPairGenerator kpGenerator;
-					KeyPair kp = null;
-					try {
-						kpGenerator = KeyPairGenerator.getInstance("RSA",
-								"AndroidKeyStore");
-						kpGenerator.initialize(spec);
-						kp = kpGenerator.generateKeyPair();
-
-						publishProgress("Generated key pair : " + kp.toString());
-						PublicKey publickey = kp.getPublic();
-						PrivateKey privateKey = kp.getPrivate();
-						publishProgress("Public key format : "
-								+ publickey.getFormat());
-						publishProgress("Used algorithm : "
-								+ publickey.getAlgorithm());
-						if (privateKey.getEncoded() == null)
-							publishProgress("Is not possible directly to access to private key :-(");
-
-					} catch (NoSuchAlgorithmException e) {
-						debug(e.toString());
-					} catch (NoSuchProviderException e) {
-						debug(e.toString());
-					} catch (InvalidAlgorithmParameterException e) {
-						debug(e.toString());
-					}
-					return null;
-				}
-
-				protected void onProgressUpdate(String... values) {
-					debug(values[0]);
-				}
-
-				@Override
-				protected void onPostExecute(Void result) {
-					// TODO Auto-generated method stub
-					progressdialog.dismiss();
-
-				}
-
-				@Override
-				protected void onPreExecute() {
-					progressdialog = ProgressDialog.show(getActivity(),
-							"Please wait...", "Generating keys...");
-				}
-
-			}.execute();
-
-		}
-
+		
 		private void debug(String message) {
 			mDebugText.append(message + "\n");
 			Log.v(TAG, message);
